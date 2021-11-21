@@ -4,6 +4,7 @@ const tasks = require('./routes/tasks')
 const connectDB = require('./db/connect')
 require('dotenv').config()
 const notFound = require('./middleware/not-found')
+const errorHandler = require('./middleware/error-handler')
 
 // global middlewares
 app.use(express.static('./public'))
@@ -16,6 +17,7 @@ const port = 3600
 
 // custom middleware
 app.use(notFound)
+app.use(errorHandler)
 
 const start = async() => {
     try {
