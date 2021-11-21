@@ -13,7 +13,7 @@ app.use(express.json())
 // routes
 app.use('/api/v1/tasks', tasks)
 
-const port = 3600
+const port = process.env.PORT || 3600
 
 // custom middleware
 app.use(notFound)
