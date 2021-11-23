@@ -16,15 +16,33 @@ const login = async (req, res) => {
         expiresIn: '30d'
     })
 
-    res.send('Fake login/register Route')
+    res.status(200).json({
+        msg: 'User Created',
+        token
+    })
 }
 
 const dashboard = async (req, res) => {
-    const luckyNumber = Math.random(100)
-    res.status(200).json({
-        msg: 'Hello John Doe',
-        secret: `Here is your authorized data, Your lucky number ${luckyNumber}`
-    })
+    const authHeader = req.headers.authorization
+
+    if(!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new customAPIError('No token provided', 401)
+    }
+
+    const token = authHeader.split(' ')[1]
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const luckyNumber = Math.random(100)
+
+        res.status(200).json({
+            msg: `Hello ${decoded.username}`,
+            secret: `Here is your authorized data, Your lucky number ${luckyNumber}`
+        })
+    }   catch (error) {
+        throw new customAPIError('Not Authorized to access this route', 401)
+    }
+
 }
 
 module.exports = {
